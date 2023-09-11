@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <activity
+            android:name=".en.koushoku.KoushokuUrlActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:host="ksk.moe" />
+                <data android:scheme="https" />
+                <data android:pathPattern="/view/..*" />
+                <data android:pathPattern="/read/..*" />
+                <data android:pathPattern="/browse..*" />
+                <data android:pathPattern="/artists/..*" />
+                <data android:pathPattern="/circles/..*" />
+                <data android:pathPattern="/magazines/..*" />
+                <data android:pathPattern="/tags/..*" />
+                <data android:pathPattern="/parodies/..*" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>
