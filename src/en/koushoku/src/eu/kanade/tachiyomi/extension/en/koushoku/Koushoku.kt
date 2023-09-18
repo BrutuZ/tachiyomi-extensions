@@ -363,6 +363,17 @@ class Koushoku : ParsedHttpSource() {
         }
     }
 
+    override fun prepareNewChapter(chapter: SChapter, manga: SManga) {
+        Log.v("Koushoku", "Preparing... ${chapter.name}")
+        if (chapter.date_upload != 0L) return
+        Log.v("Koushoku", "Prepared!!! \\o/")
+        chapter.date_upload =
+            client.newCall(pageListRequest(chapter)).execute()
+            .asJsoup().select("#metadata time")
+            .eachAttr("data-timestamp").min()
+            .toLong() * 1000
+    }
+
     override fun chapterListSelector() = latestUpdatesSelector()
 
     override fun pageListRequest(chapter: SChapter) = GET("$baseUrl${chapter.url}", headers)
