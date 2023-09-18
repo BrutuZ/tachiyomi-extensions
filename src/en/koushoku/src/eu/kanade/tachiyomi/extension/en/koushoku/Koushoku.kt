@@ -11,6 +11,7 @@ import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
+import eu.kanade.tachiyomi.source.model.UpdateStrategy
 import eu.kanade.tachiyomi.source.online.ParsedHttpSource
 import eu.kanade.tachiyomi.util.asJsoup
 import okhttp3.HttpUrl
@@ -225,8 +226,8 @@ class Koushoku : ParsedHttpSource() {
 
         genre = getTags(document)
         if (isView) description = getDesc(document)
-        status = if (isView) SManga.COMPLETED else SManga.UNKNOWN
-//        update_strategy = UpdateStrategy.ONLY_FETCH_ONCE
+        status = if (isView) SManga.COMPLETED else SManga.ONGOING
+        update_strategy = UpdateStrategy.ONLY_FETCH_ONCE
     }
 
     private fun getTags(document: Document) = listOf(
