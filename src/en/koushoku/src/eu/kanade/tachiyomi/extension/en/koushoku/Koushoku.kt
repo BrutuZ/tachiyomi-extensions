@@ -142,13 +142,41 @@ class Koushoku : ParsedHttpSource() {
         url.setQueryParameter("s", query)
         url.setQueryParameter("adv", "1")
         filters.forEach { filter ->
-            if (filter.state == null) return@forEach
+            if (filter.state == null || filter.state == "") return@forEach
             with(filter.name) {
                 when {
                     equals("Title") -> url.setQueryParameter("title", filter.state?.toString())
+                    equals("Artist") ||
+                        equals("Circle") ||
+                        equals("Magazine") ||
+                        equals("Parody") ||
+                        equals("Tags") ->
+                        url.setQueryParameter(
+                            this.lowercase().first().toString(),
+                            filter.state?.toString(),
+                        )
+//                    equals("Artist") -> url.setQueryParameter("a", filter.state?.toString())
+//                    equals("Circle") -> url.setQueryParameter("c", filter.state?.toString())
+//                    equals("Magazine") -> url.setQueryParameter("m", filter.state?.toString())
+//                    equals("Parody") -> url.setQueryParameter("p", filter.state?.toString())
+//                    equals("Tags") -> url.setQueryParameter("t", filter.state?.toString())
+                    equals("Min. Pages") -> url.setQueryParameter("ps", filter.state?.toString())
+                    equals("Max. Pages") -> url.setQueryParameter("pe", filter.state?.toString())
                     equals("Order") -> {
                         url.setQueryParameter("order", (filter.state as Int + 1).toString())
                     }
+
+                    equals("Sort") -> url.setQueryParameter(
+                        "sort",
+//                        2.0.pow(filter.state as Int).toInt().toString(),
+                        when (filter.state) {
+                            equals(0) -> "1"
+                            equals(1) -> "2"
+                            equals(3) -> "16"
+                            equals(4) -> "32"
+                            else -> "4"
+                        },
+                    )
                 }
             }
         }
