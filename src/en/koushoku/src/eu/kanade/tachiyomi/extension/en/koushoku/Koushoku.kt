@@ -101,10 +101,10 @@ class Koushoku : ParsedHttpSource() {
         } else if ("bundle=1" in query || query.startsWith("bundle:")) {
             Log.v("Koushoku", "And that $id")
             val url = "$baseUrl/browse/page/$page".toHttpUrlOrNull()!!.newBuilder()
-                .addQueryParameter("adv", "1")
-                .addQueryParameter("s", id.substringBefore(PARAMS_PREFIX))
+                .setQueryParameter("adv", "1")
+                .setQueryParameter("s", id.substringBefore(PARAMS_PREFIX))
             id.substringAfter(PARAMS_PREFIX).split("&").forEach {
-                url.addQueryParameter(it.substringBefore("="), it.substringAfter("="))
+                url.setQueryParameter(it.substringBefore("="), it.substringAfter("="))
             }
             client.newCall(searchMangaBundleRequest(url)).asObservableSuccess()
                 .map { response ->
@@ -127,7 +127,7 @@ class Koushoku : ParsedHttpSource() {
         Log.v("Koushoku", "Search: $search")
         val url = "$baseUrl/browse/page/$page".toHttpUrlOrNull()!!.newBuilder()
 
-        buildAdvQuery(url, query, if (filters.isEmpty()) getFilterList() else filters)
+        buildAdvQuery(url, search, if (filters.isEmpty()) getFilterList() else filters)
 
         Log.v("Koushoku", "HTTP: $url")
 
@@ -139,27 +139,15 @@ class Koushoku : ParsedHttpSource() {
         query: String,
         filters: FilterList,
     ) {
-        url.addQueryParameter("s", query)
-        url.addQueryParameter("adv", "1")
+        url.setQueryParameter("s", query)
+        url.setQueryParameter("adv", "1")
         filters.forEach { filter ->
             if (filter.state == null) return@forEach
             with(filter.name) {
                 when {
-                    equals("Title") -> url.addQueryParameter("title", filter.state?.toString())
-                    equals("Artist") -> url.addQueryParameter("a", filter.state?.toString())
-                    equals("Circle") -> url.addQueryParameter("c", filter.state?.toString())
-                    equals("Magazine") -> url.addQueryParameter("m", filter.state?.toString())
-                    equals("Parody") -> url.addQueryParameter("p", filter.state?.toString())
-                    equals("Tags") -> url.addQueryParameter("t", filter.state?.toString())
-                    equals("Min. Pages") -> url.addQueryParameter("ps", filter.state?.toString())
-                    equals("Max. Pages") -> url.addQueryParameter("pe", filter.state?.toString())
-                    equals("Sort") -> url.addQueryParameter(
-                        "sort",
-                        2.0.pow(filter.state as Int).toInt().toString(),
-                    )
-
+                    equals("Title") -> url.setQueryParameter("title", filter.state?.toString())
                     equals("Order") -> {
-                        url.addQueryParameter("order", (filter.state as Int + 1).toString())
+                        url.setQueryParameter("order", (filter.state as Int + 1).toString())
                     }
                 }
             }
