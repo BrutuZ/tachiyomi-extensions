@@ -316,10 +316,11 @@ class Koushoku : ParsedHttpSource() {
             listOf(
                 SChapter.create().apply {
                     setUrlWithoutDomain(response.request.url.encodedPath)
-                    val title = document.selectFirst("#metadata h1")?.text() ?: ""
-                    val ch = Regex("\\b[1-5]?\\d$").find(title)?.value ?: "1"
+                    val title: String = document.selectFirst("#metadata h1")!!.text() ?: ""
+                    val ch = Regex("(?<!20\\d\\d-)\\b[\\d.]{1,4}$").find(title)?.value?.trim('.') ?: "1"
                     Log.v("Koushoku", "Chapter $ch")
-                    name = "$ch - $title"
+                    name = "$ch. $title"
+                    chapter_number = ch.toFloat()
                     date_upload = document.select("#metadata time").eachAttr("data-timestamp").min()
                         .toLong() * 1000
                     scanlator =
@@ -346,14 +347,18 @@ class Koushoku : ParsedHttpSource() {
     }
 
     override fun chapterFromElement(element: Element): SChapter {
-        Log.v("Koushoku", "Chapter HTML: ${element.outerHtml()}")
-        val href = element.select("a").attr("href")
+//        Log.v("Koushoku", "Chapter HTML: ${element.outerHtml()}")
+        val title = element.select("a").attr("title")
+        val ch = Regex("(?<!20\\d\\d-)\\b[\\d.]{1,4}$").find(title)?.value?.trim('.') ?: "1"
 //        val manga = mangaDetailsParse(
 //            Response.Builder().request(GET(href.removePrefix("/view/"), headers)).build(),
 //        )
         return SChapter.create().apply {
-            name = element.select("a").attr("title")
-            url = href
+            url = element.select("a").attr("href")
+            name = "$ch. $title"
+            Log.v("Koushoku", "Title: $title")
+            chapter_number = ch.toFloat()
+            Log.v("Koushoku", "Chapter $ch")
             scanlator = element.select("strong").text()
         }
     }
