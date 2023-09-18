@@ -23,7 +23,6 @@ import okhttp3.Response
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import rx.Observable
-import kotlin.math.pow
 
 // TODO: Check SY Raised Tags
 // import exh.metadata.metadata.base.RaisedTag
@@ -346,19 +345,36 @@ class Koushoku : ParsedHttpSource() {
         } else {
 //        {
             document.select(chapterListSelector()).map { chapterFromElement(it) }
-//            document.select("article").map { element ->
-//                val href = element.select("a").attr("href").substringAfter("/view/")
+
+//            document.select(chapterListSelector()).map { element ->
+// //                val href = element.select("a").attr("href").substringAfter("/view/")
+//                val href = element.selectFirst("a")!!.absUrl("href")
 //                Log.v("Koushoku", "Chapter URL: $href")
-//                super.chapterListParse(
-//                    client.newCall(searchMangaByIdRequest(href)).execute(),
-//                ).first()
-//            }
+//                val subdocument = client.newCall(GET(href, headers)).execute().asJsoup()
 //                SChapter.create().apply {
-//                    Log.v("Koushoku", "Chapter HTML: ${element.outerHtml()}")
-//                    url = element.select("a").attr("href")
-//                    name = element.select("a").attr("title")
-//                    scanlator = element.select("strong").text()
+//                    setUrlWithoutDomain(href)
+//                    val title: String = subdocument.selectFirst("#metadata h1")!!.text() ?: ""
+//                    Log.v("Koushoku", "Title: $title")
+//                    val ch = Regex("(?<!20\\d\\d-)\\b[\\d.]{1,4}$").find(title)?.value ?: "1"
+//                    Log.v("Koushoku", "Chapter $ch")
+//                    name = title
+//                    chapter_number = ch.toFloat()
+//                    date_upload =
+//                        subdocument.select("#metadata time").eachAttr("data-timestamp").min()
+//                            .toLong() * 1000
+//                    scanlator =
+//                        subdocument.selectFirst("#metadata  a[href^='/browse?ps='] > span")!!.text()
 //                }
+// //                super.chapterListParse(
+// //                    client.newCall(searchMangaByIdRequest(href)).execute(),
+// //                ).first()
+// //                SChapter.create().apply {
+// //                    Log.v("Koushoku", "Chapter HTML: ${element.outerHtml()}")
+// //                    url = element.select("a").attr("href")
+// //                    name = element.select("a").attr("title")
+// //                    scanlator = element.select("strong").text()
+// //                }
+//            }
         }
     }
 
